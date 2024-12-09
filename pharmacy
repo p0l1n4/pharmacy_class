@@ -1,0 +1,139 @@
+from typing import List
+
+class PreparationProcess:
+    def __init__(self, process_id: int, description: str, process_type: str):
+        self.process_id = process_id
+        self.description = description
+        self.process_type = process_type
+
+    def calculate_preparation_time(self) -> int:
+        # заглушка
+        return 10
+
+class TechnologyDirectory:
+    def __init__(self, technology_id: int, medication_name: str, preparation_process: str):
+        self.technology_id = technology_id
+        self.medication_name = medication_name
+        self.preparation_process = preparation_process
+
+    def get_technology_details(self) -> str:
+        return f"Технологія ID: {self.technology_id}, Препарат: {self.medication_name}"
+
+class Medication:
+    def __init__(self, med_id: int, name: str, med_type: str, price: float, stock: int):
+        self.med_id = med_id
+        self.name = name
+        self.med_type = med_type
+        self.price = price
+        self.stock = stock
+
+    def get_details(self) -> str:
+        return f"Препарат: {self.name}, Тип: {self.med_type}, Ціна: {self.price}, Наявність: {self.stock}"
+
+class ReadyMedication(Medication):
+    def __init__(self, med_id: int, name: str, med_type: str, price: float, stock: int, dosage_form: str):
+        super().__init__(med_id, name, med_type, price, stock)
+        self.dosage_form = dosage_form
+
+    def get_availability(self) -> bool:
+        return self.stock > 0
+
+    def reserve_medication(self) -> bool:
+        if self.stock > 0:
+            self.stock -= 1
+            return True
+        return False
+
+class CompoundedMedication(Medication):
+    def __init__(self, med_id: int, name: str, med_type: str, price: float, stock: int, preparation_steps: str, preparation_time: int):
+        super().__init__(med_id, name, med_type, price, stock)
+        self.preparation_steps = preparation_steps
+        self.preparation_time = preparation_time
+
+    def mix_components(self):
+        print(f"Змішування компонентів для {self.name}...")
+
+    def add_ingredient(self):
+        print(f"Додавання компоненту до {self.name}...")
+
+class Prescription:
+    def __init__(self, doctor_name: str, patient_name: str, quantity: int, usage: str, diagnosis: str):
+        self.doctor_name = doctor_name
+        self.patient_name = patient_name
+        self.quantity = quantity
+        self.usage = usage
+        self.diagnosis = diagnosis
+
+class Patient:
+    def __init__(self, name: str, phone: str, address: str):
+        self.name = name
+        self.phone = phone
+        self.address = address
+
+    def update_contact_info(self, phone: str, address: str):
+        self.phone = phone
+        self.address = address
+
+class Order:
+    def __init__(self, order_id: int, status: str, expected_delivery_time: int):
+        self.order_id = order_id
+        self.status = status
+        self.expected_delivery_time = expected_delivery_time
+
+    def update_status(self, new_status: str):
+        self.status = new_status
+
+    def cancel_order(self):
+        self.status = "Скасовано"
+
+class Component:
+    def __init__(self, component_id: int, name: str, critical_level: int, quantity: int, price: float):
+        self.component_id = component_id
+        self.name = name
+        self.critical_level = critical_level
+        self.quantity = quantity
+        self.price = price
+
+    def check_stock(self) -> bool:
+        return self.quantity > self.critical_level
+
+class Inventory:
+    def __init__(self, items: List[Component]):
+        self.items = items
+
+    def check_critical(self) -> List[Component]:
+        return [item for item in self.items if item.quantity <= item.critical_level]
+
+    def generate_supply_request(self):
+        print("Обробка запиту...")
+
+class Pharmacy:
+    def __init__(self, inventory: Inventory):
+        self.inventory = inventory
+
+    def create_order(self) -> Order:
+        return Order(1, "Новий", 24)
+
+    def process_order(self, order: Order):
+        order.update_status("Виготовлено")
+
+    def check_inventory(self) -> List[Component]:
+        return self.inventory.items
+
+    def check_critical(self) -> List[Component]:
+        return self.inventory.check_critical()
+
+if __name__ == "__main__":
+    patient = Patient("Роман", "123456789", "вул. Бандери 23")
+    patient.update_contact_info("987654321", "вул. Мазепи 45")
+    print(f"Пацієнт: {patient.name}, Телефон: {patient.phone}, Адреса: {patient.address}")
+
+    component1 = Component(1, "Активний компонент", 10, 5, 50.0)
+ 
+    inventory = Inventory([component1])
+
+    pharmacy = Pharmacy(inventory)
+    critical_items = pharmacy.check_critical()
+    print("Кількість в інвентарі:")
+    for item in critical_items:
+        print(f"{item.name}: {item.quantity}")
