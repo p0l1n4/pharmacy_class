@@ -108,9 +108,10 @@ class Inventory:
         print("Обробка запиту...")
 
 class Pharmacy:
-    def __init__(self, inventory: Inventory):
+    def __init__(self, inventory: Inventory, medications: List[Medication]):
         self.inventory = inventory
-
+        self.medications = medications
+    
     def create_order(self) -> Order:
         return Order(1, "Новий", 24)
 
@@ -119,20 +120,38 @@ class Pharmacy:
 
     def check_inventory(self) -> List[Component]:
         return self.inventory.items
-
+    
     def check_critical(self) -> List[Component]:
-        return self.inventory.check_critical()
+        return self.inventory.check_critical()    
 
+
+    def display_all_medications(self):
+        print("Інформація про всі препарати:")
+        for medication in self.medications:
+            print(medication.get_details())
+
+    def display_all_components(self):
+        print("Інформація про всі компоненти:")
+        for component in self.inventory.items:
+            print(f"ID: {component.component_id}, Назва: {component.name}, Залишок: {component.critical_level}, Кількість: {component.quantity}, Ціна: {component.price}")
+    
 if __name__ == "__main__":
+    component1 = Component(1, "Активний компонент", 10, 5, 50.0)
+    component2 = Component(2, "Допоміжний компонент", 15, 20, 30.0)
+    inventory = Inventory([component1, component2])
+
+    med1 = ReadyMedication(101, "Аспірин", "Таблетки", 20.5, 100, "таблетки")
+    med2 = CompoundedMedication(102, "Плющ", "Сироп", 15.0, 50, "змішати та нагріти", 30)
+
+    pharmacy = Pharmacy(inventory, [med1, med2])
+
+    pharmacy.display_all_medications()
+    pharmacy.display_all_components()
+    
     patient = Patient("Роман", "123456789", "вул. Бандери 23")
     patient.update_contact_info("987654321", "вул. Мазепи 45")
     print(f"Пацієнт: {patient.name}, Телефон: {patient.phone}, Адреса: {patient.address}")
 
-    component1 = Component(1, "Активний компонент", 10, 5, 50.0)
- 
-    inventory = Inventory([component1])
-
-    pharmacy = Pharmacy(inventory)
     critical_items = pharmacy.check_critical()
     print("Кількість в інвентарі:")
     for item in critical_items:
